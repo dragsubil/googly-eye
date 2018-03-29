@@ -93,8 +93,8 @@ cornea =
 iris : Model -> Html msg
 iris model =
     S.circle
-        [ SA.cx (toString (model.winWidth / 2))
-        , SA.cy (toString (model.winHeight / 2))
+        [ SA.cx (toString (model.winWidth // 2))
+        , SA.cy (toString (model.winHeight // 2))
         , SA.r "70"
         , SA.fill "red"
         ]
@@ -104,8 +104,8 @@ iris model =
 spot : Model -> Html msg
 spot model =
     S.circle
-        [ SA.cx (toString (model.winWidth / 2) + 5))
-        , SA.cy (toString (model.winWidth / 2) - 4))
+        [ SA.cx (toString ((model.winWidth // 2) + 25))
+        , SA.cy (toString ((model.winHeight // 2) - 18))
         , SA.r "8"
         , SA.fill "white"
         ]

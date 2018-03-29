@@ -1,29 +1,42 @@
 <html>
-<head>
+  <head>
     <link rel="stylesheet" href="main.css">
-    <script type="text/javascript" src="elm.js"></script>
-    <script type="text/javascript">
-      var windowSize = {width: 0, height: 0};
-      var mousePos = {x: 0, y: 0};
-      function readMouseMove(e){
-      mousePos.x = e.clientX;
-      mousePos.y = e.clientY;
-      windowSize.width = window.innerWidth;
-      windowSize.height = window.innerHeight;
+    <style>
+      html, head, body {
+      margin: 0;
+      height: 100%;
       }
-      window.onmousemove = readMouseMove;
-    </script>
+    </style>
+    <script type="text/javascript" src="elm.js"></script>
 </head>
 <body>
-    <script>
-	var app = Elm.Main.fullscreen()
-	app.ports.receiveSizeAndPos.send(
-	{"winWidth": windowSize.width,
-	"winHeight": windowSize.height,
-	"mouseX" : mousePos.x,
-	"mouseY" : mousePos.y
-	})
-	
+  <script>
+    var app = Elm.Main.fullscreen();
+    var mousePos = {x: 0, y: 0};
+    app.ports.receiveSizeAndPos.send(
+    {"winWidth": window.innerWidth,
+    "winHeight": window.innerHeight,
+    "mouseX" : mousePos.x,
+    "mouseY" : mousePos.y
+    });
+    function readMouseMove(e){
+    mousePos.x = e.clientX;
+    mousePos.y = e.clientY;
+    app.ports.receiveSizeAndPos.send(
+    {"winWidth": window.innerWidth,
+    "winHeight": window.innerHeight,
+    "mouseX" : mousePos.x,
+    "mouseY" : mousePos.y
+    });
+    }
+    window.onmousemove = readMouseMove;
+    window.addEventListener('resize', () => {
+    app.ports.receiveSizeAndPos.send(
+    {"winWidth": window.innerWidth,
+    "winHeight": window.innerHeight,
+    "mouseX" : mousePos.x,
+    "mouseY" : mousePos.y
+    })});
     </script>
 </body>
 </html>
