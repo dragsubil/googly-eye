@@ -1,0 +1,29 @@
+<html>
+<head>
+    <link rel="stylesheet" href="main.css">
+    <script type="text/javascript" src="elm.js"></script>
+    <script type="text/javascript">
+      var windowSize = {width: 0, height: 0};
+      var mousePos = {x: 0, y: 0};
+      function readMouseMove(e){
+      mousePos.x = e.clientX;
+      mousePos.y = e.clientY;
+      windowSize.width = window.innerWidth;
+      windowSize.height = window.innerHeight;
+      }
+      window.onmousemove = readMouseMove;
+    </script>
+</head>
+<body>
+    <script>
+	var app = Elm.Main.fullscreen()
+	app.ports.receiveSizeAndPos.send(
+	{"winWidth": windowSize.width,
+	"winHeight": windowSize.height,
+	"mouseX" : mousePos.x,
+	"mouseY" : mousePos.y
+	})
+	
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Html exposing (..)
 import Svg as S
@@ -19,12 +19,16 @@ main =
 
 
 type alias Model =
-    { irisCxPercent : Int, irisCyPercent : Int }
+    { winWidth : Int
+    , winHeight : Int
+    , mouseX : Int
+    , mouseY : Int
+    }
 
 
 type Msg
     = Reset
-    | MousePos Int Int
+    | ReceiveDataFromJS Model
 
 
 
@@ -33,11 +37,14 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model 50 50, Cmd.none )
+    ( Model 0 0 0 0, Cmd.none )
 
 
 
 -- UPDATE
+
+
+port receiveSizeAndPos : (Model -> msg) -> Sub msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -46,8 +53,8 @@ update msg model =
         Reset ->
             ( model, Cmd.none )
 
-        MousePos x y ->
-            ( model, Cmd.none )
+        ReceiveDataFromJS data ->
+            ( data, Cmd.none )
 
 
 
@@ -56,7 +63,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    receiveSizeAndPos ReceiveDataFromJS
 
 
 
@@ -86,8 +93,8 @@ cornea =
 iris : Model -> Html msg
 iris model =
     S.circle
-        [ SA.cx (toPercent (toString model.irisCxPercent))
-        , SA.cy (toPercent (toString model.irisCyPercent))
+        [ SA.cx (toString (model.winWidth / 2))
+        , SA.cy (toString (model.winHeight / 2))
         , SA.r "70"
         , SA.fill "red"
         ]
@@ -97,14 +104,9 @@ iris model =
 spot : Model -> Html msg
 spot model =
     S.circle
-        [ SA.cx (toPercent (toString (model.irisCxPercent + 3)))
-        , SA.cy (toPercent (toString (model.irisCyPercent - 4)))
+        [ SA.cx (toString (model.winWidth / 2) + 5))
+        , SA.cy (toString (model.winWidth / 2) - 4))
         , SA.r "8"
         , SA.fill "white"
         ]
         []
-
-
-toPercent : String -> String
-toPercent num =
-    num ++ "%"
