@@ -26,13 +26,6 @@ type alias Model =
     }
 
 
-type alias Cornea =
-    { corneaX : String
-    , corneaY : String
-    , corneaR : String
-    }
-
-
 type Msg
     = Reset
     | ReceiveDataFromJS Model
