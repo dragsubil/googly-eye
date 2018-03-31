@@ -8136,75 +8136,46 @@ var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$a
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
-var _user$project$Main$spot = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$circle,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$cx(
-				_elm_lang$core$Basics$toString(((model.winWidth / 2) | 0) + 25)),
-			_1: {
+var _user$project$Main$drawCircle = F4(
+	function (cx, cy, r, fill) {
+		return A2(
+			_elm_lang$svg$Svg$circle,
+			{
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$cy(
-					_elm_lang$core$Basics$toString(((model.winHeight / 2) | 0) - 18)),
+				_0: _elm_lang$svg$Svg_Attributes$cx(
+					_elm_lang$core$Basics$toString(cx)),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$r('8'),
+					_0: _elm_lang$svg$Svg_Attributes$cy(
+						_elm_lang$core$Basics$toString(cy)),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$fill('white'),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$svg$Svg_Attributes$r(
+							_elm_lang$core$Basics$toString(r)),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$fill(fill),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
-			}
-		},
-		{ctor: '[]'});
-};
-var _user$project$Main$iris = function (model) {
-	return A2(
-		_elm_lang$svg$Svg$circle,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$cx(
-				_elm_lang$core$Basics$toString((model.winWidth / 2) | 0)),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$cy(
-					_elm_lang$core$Basics$toString((model.winHeight / 2) | 0)),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$r('70'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$fill('red'),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		},
-		{ctor: '[]'});
-};
-var _user$project$Main$cornea = A2(
-	_elm_lang$svg$Svg$circle,
-	{
-		ctor: '::',
-		_0: _elm_lang$svg$Svg_Attributes$cx('50%'),
-		_1: {
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$cy('50%'),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$r('175'),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$fill('white'),
-					_1: {ctor: '[]'}
-				}
-			}
-		}
-	},
-	{ctor: '[]'});
+			},
+			{ctor: '[]'});
+	});
 var _user$project$Main$view = function (model) {
+	var spotRadius = 8;
+	var corneaIrisGap = 3;
+	var irisRadius = 70;
+	var corneaRadius = 175;
+	var corneaY = model.winHeight / 2;
+	var corneaX = model.winWidth / 2;
+	var slope = (model.mouseX - corneaX) / (model.mouseY - corneaY);
+	var irisY = (_elm_lang$core$Native_Utils.cmp(
+		Math.pow(model.mouseX - corneaX, 2) + Math.pow(model.mouseY - corneaY, 2),
+		Math.pow((corneaRadius - 3) - irisRadius, 2)) < 0) ? model.mouseY : ((_elm_lang$core$Native_Utils.cmp(model.mouseY, model.winHeight / 2) > 0) ? (corneaY + (((corneaRadius - irisRadius) - corneaIrisGap) / _elm_lang$core$Basics$sqrt((slope * slope) + 1))) : (corneaY - (((corneaRadius - irisRadius) - corneaIrisGap) / _elm_lang$core$Basics$sqrt((slope * slope) + 1))));
+	var spotY = irisY - 18;
+	var irisX = (slope * (irisY - corneaY)) + corneaX;
+	var spotX = irisX + 25;
 	return A2(
 		_elm_lang$svg$Svg$svg,
 		{
@@ -8236,14 +8207,47 @@ var _user$project$Main$view = function (model) {
 				{ctor: '[]'}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$Main$cornea,
+				_0: A4(_user$project$Main$drawCircle, corneaX, corneaY, corneaRadius, 'white'),
 				_1: {
 					ctor: '::',
-					_0: _user$project$Main$iris(model),
+					_0: A4(_user$project$Main$drawCircle, irisX, irisY, irisRadius, 'red'),
 					_1: {
 						ctor: '::',
-						_0: _user$project$Main$spot(model),
-						_1: {ctor: '[]'}
+						_0: A4(_user$project$Main$drawCircle, spotX, spotY, spotRadius, 'white'),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$svg$Svg$text_,
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$x('10%'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$y('10%'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$fill('white'),
+											_1: {ctor: '[]'}
+										}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'mouse x: ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(model.mouseX),
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'  mouse y: ',
+													_elm_lang$core$Basics$toString(model.mouseY))))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
@@ -8275,13 +8279,13 @@ var _user$project$Main$receiveSizeAndPos = _elm_lang$core$Native_Platform.incomi
 									return _elm_lang$core$Json_Decode$succeed(
 										{winWidth: winWidth, winHeight: winHeight, mouseX: mouseX, mouseY: mouseY});
 								},
-								A2(_elm_lang$core$Json_Decode$field, 'mouseY', _elm_lang$core$Json_Decode$int));
+								A2(_elm_lang$core$Json_Decode$field, 'mouseY', _elm_lang$core$Json_Decode$float));
 						},
-						A2(_elm_lang$core$Json_Decode$field, 'mouseX', _elm_lang$core$Json_Decode$int));
+						A2(_elm_lang$core$Json_Decode$field, 'mouseX', _elm_lang$core$Json_Decode$float));
 				},
-				A2(_elm_lang$core$Json_Decode$field, 'winHeight', _elm_lang$core$Json_Decode$int));
+				A2(_elm_lang$core$Json_Decode$field, 'winHeight', _elm_lang$core$Json_Decode$float));
 		},
-		A2(_elm_lang$core$Json_Decode$field, 'winWidth', _elm_lang$core$Json_Decode$int)));
+		A2(_elm_lang$core$Json_Decode$field, 'winWidth', _elm_lang$core$Json_Decode$float)));
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
 		return {winWidth: a, winHeight: b, mouseX: c, mouseY: d};
@@ -8291,6 +8295,10 @@ var _user$project$Main$init = {
 	_0: A4(_user$project$Main$Model, 0, 0, 0, 0),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
+var _user$project$Main$Cornea = F3(
+	function (a, b, c) {
+		return {corneaX: a, corneaY: b, corneaR: c};
+	});
 var _user$project$Main$ReceiveDataFromJS = function (a) {
 	return {ctor: 'ReceiveDataFromJS', _0: a};
 };

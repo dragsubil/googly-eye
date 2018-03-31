@@ -19,10 +19,17 @@ main =
 
 
 type alias Model =
-    { winWidth : Int
-    , winHeight : Int
-    , mouseX : Int
-    , mouseY : Int
+    { winWidth : Float
+    , winHeight : Float
+    , mouseX : Float
+    , mouseY : Float
+    }
+
+
+type alias Cornea =
+    { corneaX : String
+    , corneaY : String
+    , corneaR : String
     }
 
 
@@ -72,41 +79,70 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    S.svg
-        [ SA.width "100%", SA.height "100%" ]
-        [ S.rect
-            [ SA.width "100%", SA.height "100%", SA.fill "black" ]
-            []
-        , cornea
-        , iris model
-        , spot model
-        ]
+    let
+        corneaX =
+            model.winWidth / 2
+
+        corneaY =
+            model.winHeight / 2
+
+        corneaRadius =
+            175
+
+        irisRadius =
+            70
+
+        slope =
+            (model.mouseX - corneaX) / (model.mouseY - corneaY)
+
+        corneaIrisGap =
+            3
+
+        irisY =
+            if ((model.mouseX - corneaX) ^ 2 + (model.mouseY - corneaY) ^ 2) < (corneaRadius - 3 - irisRadius) ^ 2 then
+                model.mouseY
+            else if model.mouseY > (model.winHeight / 2) then
+                (corneaY
+                    + ((corneaRadius - irisRadius - corneaIrisGap)
+                        / (sqrt ((slope * slope) + 1))
+                      )
+                )
+            else
+                (corneaY
+                    - ((corneaRadius - irisRadius - corneaIrisGap)
+                        / (sqrt ((slope * slope) + 1))
+                      )
+                )
+
+        irisX =
+            (slope * (irisY - corneaY)) + corneaX
+
+        spotX =
+            irisX + 25
+
+        spotY =
+            irisY - 18
+
+        spotRadius =
+            8
+    in
+        S.svg
+            [ SA.width "100%", SA.height "100%" ]
+            [ S.rect
+                [ SA.width "100%", SA.height "100%", SA.fill "black" ]
+                []
+            , drawCircle corneaX corneaY corneaRadius "white"
+            , drawCircle irisX irisY irisRadius "red"
+            , drawCircle spotX spotY spotRadius "white"
+            ]
 
 
-cornea : Html Msg
-cornea =
+drawCircle : Float -> Float -> Float -> String -> Html msg
+drawCircle cx cy r fill =
     S.circle
-        [ SA.cx "50%", SA.cy "50%", SA.r "175", SA.fill "white" ]
-        []
-
-
-iris : Model -> Html msg
-iris model =
-    S.circle
-        [ SA.cx (toString (model.winWidth // 2))
-        , SA.cy (toString (model.winHeight // 2))
-        , SA.r "70"
-        , SA.fill "red"
-        ]
-        []
-
-
-spot : Model -> Html msg
-spot model =
-    S.circle
-        [ SA.cx (toString ((model.winWidth // 2) + 25))
-        , SA.cy (toString ((model.winHeight // 2) - 18))
-        , SA.r "8"
-        , SA.fill "white"
+        [ SA.cx (toString cx)
+        , SA.cy (toString cy)
+        , SA.r (toString r)
+        , SA.fill fill
         ]
         []
