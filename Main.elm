@@ -1,8 +1,11 @@
 port module Main exposing (..)
 
 import Html exposing (..)
+import Mouse
 import Svg as S
 import Svg.Attributes as SA
+import Window
+import Task
 
 
 main =
@@ -27,8 +30,9 @@ type alias Model =
 
 
 type Msg
-    = Reset
-    | ReceiveDataFromJS Model
+    = NoOp
+    | WinSize Window.Size
+    | MouseCoords Mouse.Position
 
 
 
@@ -37,24 +41,38 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model 0 0 0 0, Cmd.none )
+    ( Model 0 0 0 0, Task.attempt getWindowSize Window.size )
+
+
+getWindowSize : Result x Window.Size -> Msg
+getWindowSize result =
+    case result of
+        Ok winSize ->
+            WinSize winSize
+
+        Err _ ->
+            NoOp
 
 
 
 -- UPDATE
 
 
-port receiveSizeAndPos : (Model -> msg) -> Sub msg
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Reset ->
+        NoOp ->
             ( model, Cmd.none )
 
-        ReceiveDataFromJS data ->
-            ( data, Cmd.none )
+        WinSize size ->
+            ( { model | winWidth = (toFloat size.width), winHeight = (toFloat size.height) }
+            , Cmd.none
+            )
+
+        MouseCoords coords ->
+            ( { model | mouseX = (toFloat coords.x), mouseY = (toFloat coords.y) }
+            , Cmd.none
+            )
 
 
 
@@ -63,7 +81,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    receiveSizeAndPos ReceiveDataFromJS
+    Sub.batch
+        [ Window.resizes WinSize
+        , Mouse.moves MouseCoords
+        ]
 
 
 
@@ -89,12 +110,12 @@ view model =
             (model.mouseX - corneaX) / (model.mouseY - corneaY)
 
         corneaIrisGap =
-            3
+            16
 
         irisY =
             if ((model.mouseX - corneaX) ^ 2 + (model.mouseY - corneaY) ^ 2) < (corneaRadius - 3 - irisRadius) ^ 2 then
                 model.mouseY
-            else if model.mouseY > (model.winHeight / 2) then
+            else if model.mouseY > corneaY then
                 (corneaY
                     + ((corneaRadius - irisRadius - corneaIrisGap)
                         / (sqrt ((slope * slope) + 1))

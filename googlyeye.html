@@ -12,31 +12,6 @@
 <body>
   <script>
     var app = Elm.Main.fullscreen();
-    var mousePos = {x: 0, y: 0};
-    app.ports.receiveSizeAndPos.send(
-    {"winWidth": window.innerWidth,
-    "winHeight": window.innerHeight,
-    "mouseX" : mousePos.x,
-    "mouseY" : mousePos.y
-    });
-    function readMouseMove(e){
-    mousePos.x = e.clientX;
-    mousePos.y = e.clientY;
-    app.ports.receiveSizeAndPos.send(
-    {"winWidth": window.innerWidth,
-    "winHeight": window.innerHeight,
-    "mouseX" : mousePos.x,
-    "mouseY" : mousePos.y
-    });
-    }
-    window.onmousemove = readMouseMove;
-    window.addEventListener('resize', () => {
-    app.ports.receiveSizeAndPos.send(
-    {"winWidth": window.innerWidth,
-    "winHeight": window.innerHeight,
-    "mouseX" : mousePos.x,
-    "mouseY" : mousePos.y
-    })});
     </script>
 </body>
 </html>
