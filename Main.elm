@@ -113,7 +113,7 @@ view model =
             16
 
         irisY =
-            if ((model.mouseX - corneaX) ^ 2 + (model.mouseY - corneaY) ^ 2) < (corneaRadius - 3 - irisRadius) ^ 2 then
+            if ((model.mouseX - corneaX) ^ 2 + (model.mouseY - corneaY) ^ 2) < (corneaRadius - corneaIrisGap - irisRadius) ^ 2 then
                 model.mouseY
             else if model.mouseY > corneaY then
                 (corneaY

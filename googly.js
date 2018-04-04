@@ -9079,7 +9079,7 @@ var _user$project$Main$view = function (model) {
 	var slope = (model.mouseX - corneaX) / (model.mouseY - corneaY);
 	var irisY = (_elm_lang$core$Native_Utils.cmp(
 		Math.pow(model.mouseX - corneaX, 2) + Math.pow(model.mouseY - corneaY, 2),
-		Math.pow((corneaRadius - 3) - irisRadius, 2)) < 0) ? model.mouseY : ((_elm_lang$core$Native_Utils.cmp(model.mouseY, corneaY) > 0) ? (corneaY + (((corneaRadius - irisRadius) - corneaIrisGap) / _elm_lang$core$Basics$sqrt((slope * slope) + 1))) : (corneaY - (((corneaRadius - irisRadius) - corneaIrisGap) / _elm_lang$core$Basics$sqrt((slope * slope) + 1))));
+		Math.pow((corneaRadius - corneaIrisGap) - irisRadius, 2)) < 0) ? model.mouseY : ((_elm_lang$core$Native_Utils.cmp(model.mouseY, corneaY) > 0) ? (corneaY + (((corneaRadius - irisRadius) - corneaIrisGap) / _elm_lang$core$Basics$sqrt((slope * slope) + 1))) : (corneaY - (((corneaRadius - irisRadius) - corneaIrisGap) / _elm_lang$core$Basics$sqrt((slope * slope) + 1))));
 	var spotY = irisY - 18;
 	var irisX = (slope * (irisY - corneaY)) + corneaX;
 	var spotX = irisX + 25;
